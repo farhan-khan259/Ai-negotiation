@@ -263,14 +263,14 @@ const DashboardScreen = ({ onContinue, onNavigate, onLogout }) => {
             <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
               <User className="w-5 h-5 text-primary" />
             </div>
+            <button
+              className="btn btn-ghost btn-icon text-muted-foreground hover:text-foreground"
+              onClick={onLogout}
+              title="Logout"
+            >
+              <LogOut className="w-5 h-5" />
+            </button>
           </div>
-          <button
-            className="btn btn-ghost btn-icon text-muted-foreground hover:text-foreground"
-            onClick={onLogout}
-            title="Logout"
-          >
-            <LogOut className="w-5 h-5" />
-          </button>
         </div>
       </nav>
 
