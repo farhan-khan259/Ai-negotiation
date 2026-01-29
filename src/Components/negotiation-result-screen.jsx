@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
-const NegotiationResultScreen = ({ onStartNew, onNavigate }) => {
+const NegotiationResultScreen = ({ onStartNew, onNavigate, setupData }) => {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   // Initialize theme from localStorage or system preference
@@ -42,6 +42,11 @@ const NegotiationResultScreen = ({ onStartNew, onNavigate }) => {
       localStorage.setItem("theme", "light");
     }
   };
+
+  const negotiationTone = setupData?.negotiationTone || "professional";
+  const primaryGoal = setupData?.primaryGoal || "lower-price";
+  const estimatedValue = setupData?.estimatedValue || 0;
+  const requiresApproval = estimatedValue >= 1000;
 
   return (
     <div className="min-h-screen bg-background">
@@ -100,6 +105,47 @@ const NegotiationResultScreen = ({ onStartNew, onNavigate }) => {
             <p className="text-muted-foreground">
               Final agreement reached with Acme Supply Co. on January 25, 2026
             </p>
+          </div>
+
+          {/* Strategy Applied Section (NEW) */}
+          <div className="card p-6 rounded-xl mb-6">
+            <h3 className="text-lg font-semibold text-foreground mb-4">
+              Strategy Applied
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="p-4 rounded-lg bg-accent/50">
+                <p className="text-xs text-muted-foreground mb-1">
+                  Negotiation Tone
+                </p>
+                <p className="font-semibold text-foreground capitalize">
+                  {negotiationTone}
+                </p>
+              </div>
+              <div className="p-4 rounded-lg bg-accent/50">
+                <p className="text-xs text-muted-foreground mb-1">
+                  Primary Goal
+                </p>
+                <p className="font-semibold text-foreground capitalize">
+                  {primaryGoal.replace("-", " ")}
+                </p>
+              </div>
+              <div className="p-4 rounded-lg bg-accent/50">
+                <p className="text-xs text-muted-foreground mb-1">Deal Value</p>
+                <p className="font-semibold text-foreground">
+                  ${estimatedValue.toLocaleString()}
+                </p>
+              </div>
+              <div className="p-4 rounded-lg bg-accent/50">
+                <p className="text-xs text-muted-foreground mb-1">
+                  Autonomy Mode
+                </p>
+                <p
+                  className={`font-semibold ${requiresApproval ? "text-warning" : "text-success"}`}
+                >
+                  {requiresApproval ? "Human-in-the-loop" : "Fully Autonomous"}
+                </p>
+              </div>
+            </div>
           </div>
 
           {/* Savings Highlight */}
@@ -269,8 +315,8 @@ const NegotiationResultScreen = ({ onStartNew, onNavigate }) => {
                 <p className="text-sm text-muted-foreground mb-1">
                   AI Strategy
                 </p>
-                <p className="text-base font-medium text-foreground">
-                  Collaborative
+                <p className="text-base font-medium text-foreground capitalize">
+                  {negotiationTone}
                 </p>
               </div>
             </div>

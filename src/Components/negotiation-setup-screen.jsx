@@ -58,6 +58,9 @@ const NegotiationSetupScreen = ({ onStart, onBack, onNavigate }) => {
   const [negotiationGoal, setNegotiationGoal] = useState("");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
+  const [estimatedValue, setEstimatedValue] = useState("");
+  const [negotiationTone, setNegotiationTone] = useState("");
+  const [primaryGoal, setPrimaryGoal] = useState("");
   const [rules, setRules] = useState({
     respectBudget: true,
     maintainRelationship: true,
@@ -89,6 +92,41 @@ const NegotiationSetupScreen = ({ onStart, onBack, onNavigate }) => {
     } else {
       document.documentElement.removeAttribute("data-theme");
       localStorage.setItem("theme", "light");
+    }
+  };
+
+  const validateSetup = () => {
+    if (!supplierName.trim()) {
+      alert("Please enter supplier name");
+      return false;
+    }
+    if (!estimatedValue || estimatedValue <= 0) {
+      alert("Please enter a valid estimated value");
+      return false;
+    }
+    if (!negotiationTone) {
+      alert("Please select negotiation tone");
+      return false;
+    }
+    if (!primaryGoal) {
+      alert("Please select primary goal");
+      return false;
+    }
+    return true;
+  };
+
+  const handleStart = () => {
+    if (validateSetup()) {
+      onStart({
+        supplierName,
+        estimatedValue,
+        negotiationTone,
+        primaryGoal,
+        minPrice,
+        maxPrice,
+        negotiationGoal,
+        rules,
+      });
     }
   };
 
@@ -177,6 +215,82 @@ const NegotiationSetupScreen = ({ onStart, onBack, onNavigate }) => {
                       onChange={(e) => setSupplierName(e.target.value)}
                       className="input h-11"
                     />
+                  </div>
+                </div>
+              </div>
+
+              {/* Negotiation Strategy (NEW SECTION) */}
+              <div className="card p-6 rounded-xl">
+                <h3 className="text-lg font-semibold text-foreground mb-4">
+                  Negotiation Strategy
+                </h3>
+                <div className="space-y-4">
+                  {/* Estimated Value Input */}
+                  <div className="space-y-2">
+                    <label htmlFor="estimated-value" className="label">
+                      Estimated Deal Value (USD)
+                    </label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                        $
+                      </span>
+                      <input
+                        id="estimated-value"
+                        type="number"
+                        placeholder="Enter estimated value"
+                        value={estimatedValue}
+                        onChange={(e) => setEstimatedValue(e.target.value)}
+                        className="input h-11 pl-7"
+                      />
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      {estimatedValue >= 1000 ? (
+                        <span className="text-warning">
+                          ⚠️ High-value deal: Human approval required for each
+                          AI message
+                        </span>
+                      ) : (
+                        <span className="text-success">
+                          {/* ✅ Low-value deal: AI will negotiate autonomously */}
+                        </span>
+                      )}
+                    </p>
+                  </div>
+
+                  {/* Negotiation Tone Dropdown */}
+                  <div className="space-y-2">
+                    <label className="label">Negotiation Tone</label>
+                    <Select
+                      value={negotiationTone}
+                      onValueChange={setNegotiationTone}
+                      placeholder="Select tone"
+                    >
+                      <SelectItem value="friendly">Friendly</SelectItem>
+                      <SelectItem value="formal">Formal</SelectItem>
+                      <SelectItem value="professional">Professional</SelectItem>
+                      <SelectItem value="strict">Strict/Aggressive</SelectItem>
+                    </Select>
+                  </div>
+
+                  {/* Primary Goal Dropdown */}
+                  <div className="space-y-2">
+                    <label className="label">Primary Goal</label>
+                    <Select
+                      value={primaryGoal}
+                      onValueChange={setPrimaryGoal}
+                      placeholder="Select goal"
+                    >
+                      <SelectItem value="lower-price">Lower Price</SelectItem>
+                      <SelectItem value="free-quantities">
+                        Free Quantities/Bonus Units
+                      </SelectItem>
+                      <SelectItem value="payment-installments">
+                        Payment Installments
+                      </SelectItem>
+                      <SelectItem value="free-shipping">
+                        Free Shipping
+                      </SelectItem>
+                    </Select>
                   </div>
                 </div>
               </div>
@@ -399,6 +513,25 @@ const NegotiationSetupScreen = ({ onStart, onBack, onNavigate }) => {
                         3-5 negotiation rounds
                       </p>
                     </div>
+
+                    {/* Autonomy Mode Display */}
+                    <div className="pt-3 border-t border-border">
+                      <p className="text-muted-foreground mb-2">
+                        Autonomy Mode:
+                      </p>
+                      {estimatedValue >= 1000 ? (
+                        <div className="flex items-center gap-2 text-warning">
+                          <div className="w-2 h-2 rounded-full bg-warning animate-pulse" />
+                          <span className="font-medium">Human-in-the-loop</span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-2 text-success">
+                          <div className="w-2 h-2 rounded-full bg-success" />
+                          <span className="font-medium">Fully Autonomous</span>
+                        </div>
+                      )}
+                    </div>
+
                     <div className="pt-4 border-t border-border">
                       <p className="text-xs text-muted-foreground">
                         Strategy adapts in real-time based on supplier responses
@@ -414,7 +547,7 @@ const NegotiationSetupScreen = ({ onStart, onBack, onNavigate }) => {
           {/* Action Button */}
           <div className="mt-8 flex justify-end">
             <button
-              onClick={onStart}
+              onClick={handleStart}
               id="continue-btn"
               className="btn btn-primary h-11 px-8"
             >

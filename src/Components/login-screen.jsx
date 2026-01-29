@@ -1,7 +1,8 @@
 import { AlertCircle, Bot } from "lucide-react";
 import { useState } from "react";
 
-const LoginScreen = ({ onLogin }) => {
+const LoginScreen = ({ onLogin, onNavigate }) => {
+  // Added onNavigate here
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -35,7 +36,7 @@ const LoginScreen = ({ onLogin }) => {
   };
 
   const handleForgotPassword = () => {
-    alert("Contact system administrator for password reset");
+    onNavigate("forgot-password");
   };
 
   return (
@@ -111,16 +112,30 @@ const LoginScreen = ({ onLogin }) => {
             </button>
           </form>
 
-          {/* Forgot Password Link - Now using button */}
-          <div className="mt-6 text-center">
-            <button
-              id="continue-btn"
-              type="button"
-              onClick={handleForgotPassword}
-              className="text-sm text-primary hover:text-primary/80 transition-colors bg-transparent border-none p-0 cursor-pointer"
-            >
-              Forgot your password?
-            </button>
+          {/* Navigation Links */}
+          <div className="mt-8 pt-6 border-t border-border">
+            <div className="space-y-4 text-center">
+              <p
+                className="text-sm text-muted-foreground"
+                style={{ marginTop: "20px" }}
+              >
+                Don't have an account?{" "}
+                <button
+                  type="button"
+                  onClick={() => onNavigate("register")}
+                  className="btn btn-primary w-medium h-6"
+                >
+                  Create an account
+                </button>
+              </p>
+
+              <button
+                onClick={handleForgotPassword}
+                className="btn btn-primary w-medium h-6"
+              >
+                Forgot password?
+              </button>
+            </div>
           </div>
         </div>
       </div>

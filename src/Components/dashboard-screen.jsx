@@ -2,6 +2,7 @@ import {
   Bot,
   CheckCircle2,
   FileText,
+  LogOut,
   Moon,
   Settings,
   Sun,
@@ -11,7 +12,7 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-const DashboardScreen = ({ onContinue, onNavigate }) => {
+const DashboardScreen = ({ onContinue, onNavigate, onLogout }) => {
   const [files, setFiles] = useState([
     {
       id: "1",
@@ -263,6 +264,13 @@ const DashboardScreen = ({ onContinue, onNavigate }) => {
               <User className="w-5 h-5 text-primary" />
             </div>
           </div>
+          <button
+            className="btn btn-ghost btn-icon text-muted-foreground hover:text-foreground"
+            onClick={onLogout}
+            title="Logout"
+          >
+            <LogOut className="w-5 h-5" />
+          </button>
         </div>
       </nav>
 
